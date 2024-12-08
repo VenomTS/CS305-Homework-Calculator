@@ -18,7 +18,7 @@ class Program
                               "4. Exit");
             var input = Console.ReadLine();
             var isValid = int.TryParse(input, out var result);
-            if (!isValid)
+            if (!isValid || result < 1 || result > 4)
             {
                 Console.WriteLine("Invalid Input, only numbers from 1 to 4 are acceptable!\n");
                 continue;
@@ -29,6 +29,7 @@ class Program
                 Console.WriteLine("Goodbye!");
                 break;
             }
+            
         
             calculator.UseCalculator(result);
         }

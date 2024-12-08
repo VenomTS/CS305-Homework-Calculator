@@ -191,12 +191,12 @@ public class Calculator
     private double? CalculateSqrtExpression(string expression)
     {
         var result = CalculateBasicExpression(expression);
+        if (result == null) return null;
         if (result < 0)
         {
             Console.WriteLine("ERROR: Cannot calculate square root of a negative number!");
             return null;
         }
-        if (result == null) return null;
         return Math.Sqrt(result.Value * 1.0d);
     }
 
@@ -277,7 +277,8 @@ public class Calculator
 
                     if (secondNumber == 0)
                     {
-                        Console.WriteLine();
+                        Console.WriteLine("ERROR: Division by zero");
+                        return null;
                     }
                     
                     expression[i] = expression[i - 1] = expression[i - 2] = "DELETE";
@@ -321,9 +322,12 @@ public class Calculator
     private void AddToHistory(string expression, double result, bool isSqrt = false)
     {
         if (isSqrt) expression = "√(" + expression + ")";
-        _history.Add(expression, result);
-        var data = JsonSerializer.Serialize(_history);
-        File.WriteAllText(FilePath, data);
+
+        if (_history.TryAdd(expression, result))
+        {
+            var data = JsonSerializer.Serialize(_history);
+            File.WriteAllText(FilePath, data);
+        }
 
         if (isSqrt) Console.WriteLine($"Square Root: {result}");
         else Console.WriteLine($"Result: {result}");
